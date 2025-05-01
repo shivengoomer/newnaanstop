@@ -20,7 +20,7 @@ reply in natural language — do NOT return code or JSON.
 
 Example reply:
 "Yes! I found some great Italian pasta recipes for you 🍝. 
-You can explore all the details on our Recipe page link here https://newthenaanstop.vercel.app/recipe."
+You can explore all the details on our Recipe page link here https://newnaanstop.vercel.app/recipe."
 
 If you don’t have matching recipes, politely say:
 "Sorry, I couldn’t find an exact match, but you can check the /recipe page for more options!"
