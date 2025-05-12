@@ -1,8 +1,7 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import NewRecipe from './NewRecipe';
 interface Recipe {
   _id: string;
   dishName: string;
@@ -66,17 +65,31 @@ const Recipes = () => {
             Delicious Recipes Just for You
           </h2>
         </div>
-
-        <div className="flex justify-center mb-4">
-          <input
-            type="text"
-            placeholder="🔍 Search recipes..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="text-center px-4 py-2 border rounded-lg w-full max-w-2xl focus:outline-none focus:ring-2 focus:ring-orange-400"
-            aria-label="Search recipes"
-          />
+        <div>
+          <div className="flex justify-center mb-4">
+            <div className="relative w-full max-w-2xl">
+              <input
+          type="text"
+          placeholder="🔍 Search recipes..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="text-center px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-orange-400"
+          aria-label="Search recipes"
+              />
+              <button
+          onClick={() => setSearchTerm('')}
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 bg-orange-400 text-white rounded-lg hover:bg-orange-500 focus:outline-none"
+          aria-label="Clear search"
+              >
+          Clear
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col md:flex-row items-center justify-center my-8">
+            <NewRecipe />
+          </div>
         </div>
+        
 
         <div className="flex justify-center gap-2 flex-wrap mb-6">
           {['', 'Veg', 'Non-Veg', 'Egg'].map((category) => (
@@ -165,7 +178,9 @@ const Recipes = () => {
                   <iframe
                     width="560"
                     height="315"
-                    src={selectedRecipe.yt_link.replace("watch?v=", "embed/").replace('http','https')}
+                    src={selectedRecipe.yt_link.startsWith('http') 
+                      ? selectedRecipe.yt_link.replace("watch?v=", "embed/") 
+                      : `https://${selectedRecipe.yt_link.replace("watch?v=", "embed/")}`}
                     title="YouTube video player"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

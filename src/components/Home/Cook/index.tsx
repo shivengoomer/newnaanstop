@@ -1,4 +1,5 @@
 "use client"
+import { Link } from 'lucide-react';
 import Image from 'next/image';
 
 
@@ -31,7 +32,6 @@ Whether you’re a spice whisperer or still figuring out how not to burn toast, 
                         <ul>🍴Chef tips and secret hacks
                         </ul>
                         <ul>Cravings matched with what’s in your fridge</ul></p>
-                        <button className='text-xl font-medium rounded-full text-white py-5 px-6 bg-primary lg:px-10 mr-6 w-fit border border-primary hover:bg-transparent hover:text-primary'>Learn more</button>
                     </div>
                 </div>
             </div>

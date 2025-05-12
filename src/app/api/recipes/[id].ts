@@ -36,9 +36,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(500).json({ message: (err as Error).message });
       }
       break;
-
+      case 'POST': // Add new recipe
+      try {
+        const newRecipe = new RecipeModel(req.body);
+        const savedRecipe = await newRecipe.save();
+        res.status(201).json(savedRecipe);
+      } catch (err) {
+        res.status(400).json({ message: (err as Error).message });
+      }
+      break;
     default:
-      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
+      res.setHeader('Allow', ['GET', 'PUT', 'DELETE','POST']);
       res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

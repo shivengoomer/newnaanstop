@@ -20,7 +20,7 @@ const Hero = () => {
                         <Link href='#cook-section' className='text-xl w-full md:w-auto font-medium rounded-full text-white py-5 px-6 bg-primary hover:text-primary lg:px-14 md:mr-6 border border-primary hover:bg-transparent text-center'>
                             Lets cook
                         </Link>
-                        <Link href='#about-section' className='flex border w-full md:w-auto mt-5 md:mt-0 border-primary justify-center rounded-full text-xl font-medium items-center py-5 px-10 text-primary hover:text-white hover:bg-primary'>
+                        <Link href='/recipe' className='flex border w-full md:w-auto mt-5 md:mt-0 border-primary justify-center rounded-full text-xl font-medium items-center py-5 px-10 text-primary hover:text-white hover:bg-primary'>
                             Explore now
                         </Link>
                          </div>
