@@ -175,17 +175,19 @@ const Recipes = () => {
                 {selectedRecipe.yt_link && (
                 <div className="mt-4 justify-items-center align-center">
                   <strong>Watch Tutorial:</strong>
-                  <iframe
+                    <iframe
                     width="560"
                     height="315"
-                    src={selectedRecipe.yt_link.startsWith('http') 
-                      ? selectedRecipe.yt_link.replace("watch?v=", "embed/") .replace('http','https')
-                      : `{selectedRecipe.yt_link.replace("watch?v=", "embed/")}`}
+                    src={selectedRecipe.yt_link.startsWith('https') 
+                      ? selectedRecipe.yt_link.replace("watch?v=", "embed/")
+                      : selectedRecipe.yt_link.startsWith('http') 
+                      ? selectedRecipe.yt_link.replace("http", "https").replace("watch?v=", "embed/")
+                      : selectedRecipe.yt_link.replace("watch?v=", "embed/")}
                     title="YouTube video player"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
-                  ></iframe>
+                    ></iframe>
                 </div>
 )}
 
