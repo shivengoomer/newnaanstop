@@ -180,7 +180,7 @@ const Recipes = () => {
                     height="315"
                     src={selectedRecipe.yt_link.startsWith('http') 
                       ? selectedRecipe.yt_link.replace("watch?v=", "embed/") 
-                      : `https://${selectedRecipe.yt_link.replace("watch?v=", "embed/")}`}
+                      : `{selectedRecipe.yt_link.replace("watch?v=", "embed/")}`}
                     title="YouTube video player"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
