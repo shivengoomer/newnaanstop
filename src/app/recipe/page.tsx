@@ -179,7 +179,7 @@ const Recipes = () => {
                     width="560"
                     height="315"
                     src={selectedRecipe.yt_link.startsWith('http') 
-                      ? selectedRecipe.yt_link.replace("watch?v=", "embed/") 
+                      ? selectedRecipe.yt_link.replace("watch?v=", "embed/") .replace('http','https')
                       : `{selectedRecipe.yt_link.replace("watch?v=", "embed/")}`}
                     title="YouTube video player"
                     frameBorder="0"
