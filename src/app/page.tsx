@@ -17,7 +17,6 @@ export default function Home() {
       <Hero />
       <Gallery />
       <Features />
-      <Cook />
       <Expert />
       <Newsletter />
     </main>

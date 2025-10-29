@@ -1,7 +1,40 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+function isRecipeQuery(text: string) {
+  const q = text.toLowerCase();
+  return /recipe|recipes|dish|cuisine|ingredient|ingredients|cook(ing)?|time|servings|find|search|look for/.test(q);
+}
+
+function parseTimeToNumber(time: any): number | undefined {
+  if (time == null) return undefined;
+  const str = String(time);
+  const m = str.match(/(\d+)/);
+  return m ? parseInt(m[1], 10) : undefined;
+}
+
+function findMatches(recipes: any[], query: string) {
+  const q = query.toLowerCase();
+  const timeMatch = query.match(/(\d+)\s*(min|mins|minutes)/i);
+  const maxTime = timeMatch ? parseInt(timeMatch[1], 10) : undefined;
+
+  return recipes.filter((r) => {
+    const name = (r.name || r.dishName || r.title || '').toString().toLowerCase();
+    const category = (r.category || '').toString().toLowerCase();
+    const ingredients = (r.ingredients || []).join(' ').toLowerCase();
+    const author = (r.author || '').toString().toLowerCase();
+    const timeNum = parseTimeToNumber(r.cookingTime || r.time || r.cookTime);
+
+    const matchesText =
+      name.includes(q) || category.includes(q) || ingredients.includes(q) || author.includes(q);
+
+    const matchesTime = maxTime !== undefined ? (timeNum !== undefined ? timeNum <= maxTime : false) : true;
+
+    return (matchesText || q === '') && matchesTime;
+  });
+}
 
 export async function POST(request: Request) {
   try {
@@ -12,60 +45,51 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Text is required' }, { status: 400 });
     }
 
-    const model = ai.getGenerativeModel({ model: "gemini-2.0-flash" });
-    const prompt = `
-You are a helpful assistant that manages recipes.
+    // Fetch all recipes from your own API using absolute URL derived from incoming request
+    const recipesUrl = new URL('/api/recipes', (request as any).url).toString();
+    const recipesRes = await fetch(recipesUrl);
+    if (!recipesRes.ok) {
+      console.error('Failed fetching recipes:', recipesRes.statusText);
+      // proceed with empty array rather than throwing to allow fallback to Gemini
+    }
+    const recipesJson = await recipesRes.json().catch(() => null);
+    const recipes = Array.isArray(recipesJson) ? recipesJson : recipesJson?.recipes || [];
 
-When a user asks to add a new recipe, begin a friendly, step-by-step conversation to collect the following information, one field at a time:
+    if (isRecipeQuery(text)) {
+      const matches = findMatches(recipes, text);
 
-Dish name
+      if (!matches || matches.length === 0) {
+        return NextResponse.json({
+          response:
+            "Sorry, I couldn’t find an exact match, but you can browse more on the /recipe page: https://newnaanstop.vercel.app/recipe",
+        });
+      }
 
-Image URL
+      // Build a concise natural-language reply based on matched recipes
+      const top = matches.slice(0, 5).map((r) => {
+        const name = r.name || r.dishName || r.title || 'Untitled';
+        const cat = r.category ? ` (${r.category})` : '';
+        const timeVal = r.cookingTime || r.time || r.cookTime;
+        const timeNum = parseTimeToNumber(timeVal);
+        const timeDisplay = timeNum ? ` • ${timeNum} mins` : '';
+        const link = r.slug ? `https://newnaanstop.vercel.app/recipe/${r.slug}` : `https://newnaanstop.vercel.app/recipe`;
+        return `- ${name}${cat}${timeDisplay} — ${link}`;
+      }).join('\n');
 
-Category (e.g., Veg, Non-Veg, Dessert)
+      const reply = `Yes! I found ${matches.length} recipe(s) that might match your request:\n\n${top}\n\nExplore more on the Recipes page: https://newnaanstop.vercel.app/recipe`;
 
-3–5 ingredients
+      return NextResponse.json({ response: reply, matchesCount: matches.length, matches: matches.slice(0, 10) });
+    }
 
-Cooking time (in minutes)
-
-Cooking instructions
-
-Number of servings
-
-Difficulty level (Easy, Medium, Hard)
-
-Author name
-
-Optional YouTube video link
-
-Store the collected information in a recipe object as you go.
-
-Once all the required fields are provided, automatically submit the recipe using:
-
-axios.post('/api/recipes', recipe)
-Then reply to the user with a success message like:
-✅ "Your recipe for Dish Name has been added successfully! You can view it on the Recipes Page."
-
-If there's an error during submission, show an appropriate error message.
-
-When users ask for recipes (like based on dish, cuisine, ingredients, or cooking time), reply in natural language and link to the Recipe page:
-
-"Yes! I found some great recipes for you 🍽️.
-Explore them here: https://newnaanstop.vercel.app/recipe"
-
-If no match is found, say:
-"Sorry, I couldn’t find an exact match, but you can browse more on the /recipe page."
-
-For non-recipe questions, respond normally as a helpful assistant.
-User Message ${text}`;
-
-
+    // For non-recipe questions, fall back to Gemini
+    const model = ai.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const prompt = `You are a helpful assistant.\n\nUser Message: ${text}\n`;
     const result = await model.generateContent(prompt);
     const responseText = await result.response.text();
 
     return NextResponse.json({ response: responseText });
   } catch (error) {
-    console.error('Gemini Error:', error);
-    return NextResponse.json({ error: 'Failed to get response from Gemini' }, { status: 500 });
+    console.error('Error in /api/chat:', error);
+    return NextResponse.json({ error: 'Failed to process request' }, { status: 500 });
   }
 }
