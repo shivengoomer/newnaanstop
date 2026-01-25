@@ -29,13 +29,23 @@ const Header: React.FC = () => {
   const handleScroll = () => setSticky(window.scrollY >= 20);
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (signInRef.current && !signInRef.current.contains(event.target as Node)) {
+    if (
+      signInRef.current &&
+      !signInRef.current.contains(event.target as Node)
+    ) {
       setIsSignInOpen(false);
     }
-    if (signUpRef.current && !signUpRef.current.contains(event.target as Node)) {
+    if (
+      signUpRef.current &&
+      !signUpRef.current.contains(event.target as Node)
+    ) {
       setIsSignUpOpen(false);
     }
-    if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node) && navbarOpen) {
+    if (
+      mobileMenuRef.current &&
+      !mobileMenuRef.current.contains(event.target as Node) &&
+      navbarOpen
+    ) {
       setNavbarOpen(false);
     }
   };
@@ -50,16 +60,19 @@ const Header: React.FC = () => {
   }, [navbarOpen, isSignInOpen, isSignUpOpen]);
 
   useEffect(() => {
-    document.body.style.overflow = isSignInOpen || isSignUpOpen || navbarOpen ? "hidden" : "";
+    document.body.style.overflow =
+      isSignInOpen || isSignUpOpen || navbarOpen ? "hidden" : "";
   }, [isSignInOpen, isSignUpOpen, navbarOpen]);
 
   return (
     <header
       className={`fixed top-0 z-40 w-full transition-all duration-300 ${
-        sticky ? "shadow-lg bg-white dark:bg-gray-600 py-4" : "shadow-none py-8"
+        sticky
+          ? "shadow-lg bg-white dark:bg-white/5 backdrop-blur-xl py-2"
+          : "shadow-none py-1"
       }`}
     >
-      <div className="lg:py-0 py-2">
+      <div className="lg:py-0 py-1">
         <div className="container mx-auto lg:max-w-screen-xl md:max-w-screen-md flex items-center justify-between px-2">
           <Logo />
           <nav className="hidden lg:flex flex-grow items-center gap-9 justify-center">
@@ -69,54 +82,63 @@ const Header: React.FC = () => {
           </nav>
           <div className="flex items-center gap-4">
             <ThemeToggler />
-            <Link
-              href="#"
-              className="hidden lg:block text-primary bg-primary/15 hover:text-white hover:bg-primary font-medium text-lg py-4 px-8 rounded-full"
-              onClick={() => setIsSignInOpen(true)}
-            >
-              Sign In
-            </Link>
-            {isSignInOpen && (
-              <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div
-                  ref={signInRef}
-                  className="relative mx-auto w-full max-w-md overflow-hidden rounded-lg px-8 pt-14 pb-8 text-center bg-white dark:bg-gray-600 bg-opacity-96 backdrop-blur-lg"
-                >
-                  <button
-                    onClick={() => setIsSignInOpen(false)}
-                    className="absolute top-0 right-0 mr-8 mt-8 dark:invert"
-                    aria-label="Close Sign In Modal"
+            <div className="invisible">
+              <Link
+                href="#"
+                className="hidden lg:block text-primary bg-primary/15 hover:text-white hover:bg-primary font-medium text-lg py-4 px-4 rounded-full"
+                onClick={() => setIsSignInOpen(true)}
+              >
+                Sign In
+              </Link>
+              {isSignInOpen && (
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div
+                    ref={signInRef}
+                    className="relative mx-auto w-full max-w-md overflow-hidden rounded-lg px-4 pb-4 text-center bg-white dark:bg-gray-600 bg-opacity-96 backdrop-blur-lg"
                   >
-                    <Icon icon="tabler:currency-xrp" className="text-black hover:text-primary text-24 inline-block me-2" />
-                  </button>
-                  <Signin />
+                    <button
+                      onClick={() => setIsSignInOpen(false)}
+                      className="absolute top-0 right-0 mr-8 mt-8 dark:invert"
+                      aria-label="Close Sign In Modal"
+                    >
+                      <Icon
+                        icon="tabler:currency-xrp"
+                        className="text-black hover:text-primary text-24 inline-block me-2"
+                      />
+                    </button>
+                    <Signin />
+                  </div>
                 </div>
-              </div>
-            )}
-            <Link
-              href="#"
-              className="hidden lg:block bg-primary text-white hover:bg-primary/15 hover:text-primary font-medium text-lg py-4 px-8 rounded-full"
-              onClick={() => setIsSignUpOpen(true)}
-            >
-              Sign Up
-            </Link>
-            {isSignUpOpen && (
-              <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div
-                  ref={signUpRef}
-                  className="relative mx-auto w-full max-w-md overflow-hidden rounded-lg bg-dark_grey bg-opacity-90 backdrop-blur-md px-8 pt-14 pb-8 text-center"
-                >
-                  <button
-                    onClick={() => setIsSignUpOpen(false)}
-                    className="absolute top-0 right-0 mr-8 mt-8 dark:invert"
-                    aria-label="Close Sign Up Modal"
+              )}
+              <Link
+                href="#"
+                className="hidden lg:block bg-primary text-white hover:bg-primary/15 hover:text-primary font-medium text-lg py-4 px-8 rounded-full"
+                onClick={() => setIsSignUpOpen(true)}
+              >
+                Sign Up
+              </Link>
+              {isSignUpOpen && (
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div
+                    ref={signUpRef}
+                    className="relative mx-auto w-full max-w-md overflow-hidden rounded-lg bg-dark_grey bg-opacity-90 backdrop-blur-md px-8 pt-14 pb-8 text-center"
                   >
-                    <Icon icon="tabler:currency-xrp" className="text-white hover:text-primary text-24 inline-block me-2" />
-                  </button>
-                  <SignUp />
+                    <button
+                      onClick={() => setIsSignUpOpen(false)}
+                      className="absolute top-0 right-0 mr-8 mt-8 dark:invert"
+                      aria-label="Close Sign Up Modal"
+                    >
+                      <Icon
+                        icon="tabler:currency-xrp"
+                        className="text-white hover:text-primary text-24 inline-block me-2"
+                      />
+                    </button>
+                    <SignUp />
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+
             <button
               onClick={() => setNavbarOpen(!navbarOpen)}
               className="block lg:hidden p-2 rounded-lg"
@@ -153,24 +175,24 @@ const Header: React.FC = () => {
             ))}
             <div className="mt-4 flex flex-col space-y-4 w-full">
               <Link
-          href="#"
-          className="bg-transparent border border-primary text-primary px-4 py-2 rounded-lg hover:bg-blue-600 hover:text-white"
-          onClick={() => {
-            setIsSignInOpen(true);
-            setNavbarOpen(false);
-          }}
+                href="#"
+                className="bg-transparent border border-primary text-primary px-4 py-2 rounded-lg hover:bg-blue-600 hover:text-white"
+                onClick={() => {
+                  setIsSignInOpen(true);
+                  setNavbarOpen(false);
+                }}
               >
-          Sign In
+                Sign In
               </Link>
               <Link
-          href="#"
-          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          onClick={() => {
-            setIsSignUpOpen(true);
-            setNavbarOpen(false);
-          }}
+                href="#"
+                className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                onClick={() => {
+                  setIsSignUpOpen(true);
+                  setNavbarOpen(false);
+                }}
               >
-          Sign Up
+                Sign Up
               </Link>
             </div>
           </nav>
