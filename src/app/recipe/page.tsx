@@ -245,39 +245,6 @@ const Recipes = () => {
                         {selectedRecipe.instructions}
                       </p>
                     </div>
-
-                    {selectedRecipe.yt_link && (
-                      <div className="space-y-4">
-                        <h3 className="text-3xl ext-center font-bold text-gray-900 dark:text-white w-full flex items-center gap-3">
-                          <span className="text-red-500">▶️</span> Video
-                          Tutorial
-                        </h3>
-                        <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl">
-                          <iframe
-                            className="w-full h-full"
-                            src={
-                              selectedRecipe.yt_link.startsWith("https")
-                                ? selectedRecipe.yt_link.replace(
-                                    "watch?v=",
-                                    "embed/",
-                                  )
-                                : selectedRecipe.yt_link.startsWith("http")
-                                  ? selectedRecipe.yt_link
-                                      .replace("http", "https")
-                                      .replace("watch?v=", "embed/")
-                                  : selectedRecipe.yt_link.replace(
-                                      "watch?v=",
-                                      "embed/",
-                                    )
-                            }
-                            title="YouTube video player"
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                          ></iframe>
-                        </div>
-                      </div>
-                    )}
                   </div>
 
                   {/* Right Column - Ingredients */}
@@ -319,6 +286,39 @@ const Recipes = () => {
                       </div>
                     )}
                   </div>
+                </div>
+                <div className="p-8 lg:p-10 flex justify-center">
+                  {selectedRecipe.yt_link && (
+                    <div className="space-y-6 max-w-6xl w-full">
+                      <h3 className="text-3xl text-center font-bold text-gray-900 dark:text-white flex items-center justify-center gap-3">
+                        <span className="text-red-500">▶️</span> Video Tutorial
+                      </h3>
+                      <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black">
+                        <iframe
+                          className="w-full h-full"
+                          src={
+                            selectedRecipe.yt_link.startsWith("https")
+                              ? selectedRecipe.yt_link.replace(
+                                  "watch?v=",
+                                  "embed/",
+                                )
+                              : selectedRecipe.yt_link.startsWith("http")
+                                ? selectedRecipe.yt_link
+                                    .replace("http", "https")
+                                    .replace("watch?v=", "embed/")
+                                : selectedRecipe.yt_link.replace(
+                                    "watch?v=",
+                                    "embed/",
+                                  )
+                          }
+                          title="YouTube video player"
+                          style={{ border: 0 }}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
